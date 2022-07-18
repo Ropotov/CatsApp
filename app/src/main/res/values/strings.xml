@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CatsApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="like_cat">Нравится</string>
+    <string name="Dis_like_cat">Не нравится</string>
+    <string name="cats">Cats</string>
+    <string name="about">O приложении</string>
+    <string name="about_text">Приложение для голосования за красивых котиков.\n\nДля разработки использовались:\n\nRetrofit\nCoroutine\nGlide</string>
+</resources>
