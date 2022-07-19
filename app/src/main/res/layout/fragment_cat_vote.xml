@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="screens.CatVoteFragment">
+    tools:context="screens.CatVoteFragment"
+    android:id="@+id/clCatVoteFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
@@ -52,6 +53,13 @@
             android:contentDescription="@string/cats"
             android:scaleType="fitXY"/>
 
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            android:layout_gravity="center"/>
+
     </androidx.cardview.widget.CardView>
 
     <Button
@@ -65,19 +73,37 @@
         app:drawableLeftCompat="@drawable/ic_like"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
-        app:layout_constraintTop_toTopOf="@+id/guideline4" />
+        app:layout_constraintTop_toTopOf="@+id/guideline4"
+        android:clickable="false"/>
 
     <Button
         android:id="@+id/btnDisLike"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="8dp"
         android:backgroundTint="@color/red"
         app:drawableLeftCompat="@drawable/ic_dislike"
         android:drawablePadding="5dp"
         android:text="@string/Dis_like_cat"
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
-        app:layout_constraintTop_toBottomOf="@+id/btnLike" />
+        app:layout_constraintTop_toBottomOf="@+id/btnLike"
+        android:clickable="false"/>
+
+    <Button
+        android:id="@+id/btnAddFavorite"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="@color/orange"
+        app:drawableLeftCompat="@drawable/ic_favorites"
+        android:drawablePadding="5dp"
+        android:text="@string/add_favorite"
+        app:layout_constraintEnd_toStartOf="@+id/guideline2"
+        app:layout_constraintStart_toStartOf="@+id/guideline1"
+        app:layout_constraintTop_toBottomOf="@+id/btnDisLike"
+        android:clickable="false"/>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
