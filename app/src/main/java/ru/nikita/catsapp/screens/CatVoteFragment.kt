@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -43,6 +44,9 @@ class CatVoteFragment : Fragment() {
         binding.btnDisLike.setOnClickListener {
             showAlertDialog(viewModel)
         }
+        binding.btnAddFavorite.setOnClickListener {
+            viewModel.postCat(list[0].id)
+        }
     }
 
     private fun getCatImage(viewModel: CatVoteViewModel) {
@@ -52,30 +56,48 @@ class CatVoteFragment : Fragment() {
                 binding.clCatVoteFragment,
                 getString(R.string.repeat)
             )
-            Glide.with(binding.imageCat)
-                .load(list[0].url)
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?, p1: Any?, p2: Target<Drawable>?, p3: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        p1: Drawable?, p2: Any?, p3: Target<Drawable>?, p4: DataSource?, p5: Boolean
-                    ): Boolean {
-                        binding.progressBar.visibility = View.GONE
-                        clickableButton(true)
-                        return false
-                    }
-                })
-                .into(binding.imageCat)
+            loadImage()
         })
+    }
+
+    private fun loadImage() {
+        Glide.with(binding.imageCat)
+            .load(list[0].url)
+            .placeholder(createProgressDrawable())
+            .listener(object : RequestListener<Drawable> {
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    return false
+                }
+
+                override fun onResourceReady(
+                    resource: Drawable?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    clickableButton(true)
+                    return false
+                }
+            })
+            .into(binding.imageCat)
+    }
+
+    private fun createProgressDrawable(): CircularProgressDrawable {
+        val progressDrawable = CircularProgressDrawable(requireContext())
+        progressDrawable.strokeWidth = 5f
+        progressDrawable.centerRadius = 30f
+        progressDrawable.start()
+        return progressDrawable
     }
 
     private fun updateCatImage(viewModel: CatVoteViewModel) {
         clickableButton(false)
-        binding.progressBar.visibility = View.VISIBLE
         viewModel.getCat()
     }
 
