@@ -7,10 +7,13 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import ru.nikita.catsapp.api.RetrofitInstance
 import ru.nikita.catsapp.model.DataModelItem
+import ru.nikita.catsapp.model.PostItem
+import ru.nikita.catsapp.model.PostResponse
 import ru.nikita.catsapp.utils.API_KEY
 
 class CatVoteViewModel : ViewModel() {
     var catList: MutableLiveData<Response<ArrayList<DataModelItem>>> = MutableLiveData()
+    val postList: MutableLiveData<Response<PostResponse>> = MutableLiveData()
 
 
     fun getCat() {
@@ -19,9 +22,10 @@ class CatVoteViewModel : ViewModel() {
         }
     }
 
-    fun postCat(string: String?) {
+    fun postCat(postItem: PostItem) {
         viewModelScope.launch {
-            RetrofitInstance.api.postCatFavorite(API_KEY, string)
+            postList.value = RetrofitInstance.api.
+            postCatFavorite(API_KEY, postItem)
         }
     }
 }

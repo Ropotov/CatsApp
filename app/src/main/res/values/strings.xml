@@ -13,4 +13,6 @@
     <string name="no">Нет</string>
     <string name="text_snack_bar">Можете добавить котика в избранные</string>
     <string name="repeat">Попробуйте еще раз</string>
+    <string name="add_favorites">Добавлено в избранные</string>
+    <string name="not_add_favorites">Не удалось добавить</string>
 </resources>

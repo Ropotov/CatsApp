@@ -1,5 +1,7 @@
 package ru.nikita.catsapp.model
 
+import com.google.gson.annotations.SerializedName
+
 data class DataModel (val item: ArrayList<DataModelItem>)
 
 data class DataModelItem(
@@ -7,4 +9,11 @@ data class DataModelItem(
     var id: String?,
     var url: String?,
     var width: Int?
+)
+data class PostItem(
+    var image_id: String?
+)
+data class PostResponse(
+    var message: String,
+    var id: String
 )
