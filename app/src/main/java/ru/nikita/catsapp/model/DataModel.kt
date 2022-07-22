@@ -1,6 +1,5 @@
 package ru.nikita.catsapp.model
 
-import com.google.gson.annotations.SerializedName
 
 data class DataModel (val item: ArrayList<DataModelItem>)
 

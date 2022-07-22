@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import ru.nikita.catsapp.R
 import ru.nikita.catsapp.databinding.FragmentCatVoteBinding
 import ru.nikita.catsapp.model.DataModelItem
 import ru.nikita.catsapp.model.PostItem
+import kotlin.random.Random
 
 class CatVoteFragment : Fragment() {
 
@@ -47,16 +47,14 @@ class CatVoteFragment : Fragment() {
             showAlertDialog(viewModel)
         }
         binding.btnAddFavorite.setOnClickListener {
-            viewModel.postCat(PostItem(image_id = list[0].id))
+            val postItem = PostItem(image_id = list[0].id)
+            viewModel.postCat(postItem)
             viewModel.postList.observe(viewLifecycleOwner, { response ->
                 if (response.isSuccessful) {
                     showSnackBar(binding.clCatVoteFragment, getString(R.string.add_favorites))
-                    Log.d("TAG", response.body().toString())
-                    Log.d("TAG", response.code().toString())
+                    updateCatImage(viewModel)
                 } else {
                     showSnackBar(binding.clCatVoteFragment, getString(R.string.not_add_favorites))
-                    Log.d("TAG", response.body().toString())
-                    Log.d("TAG", response.code().toString())
                 }
             })
         }

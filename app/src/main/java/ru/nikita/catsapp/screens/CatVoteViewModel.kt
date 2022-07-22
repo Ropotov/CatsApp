@@ -24,8 +24,7 @@ class CatVoteViewModel : ViewModel() {
 
     fun postCat(postItem: PostItem) {
         viewModelScope.launch {
-            postList.value = RetrofitInstance.api.
-            postCatFavorite(API_KEY, postItem)
+            postList.value = RetrofitInstance.api.postCatFavorite(API_KEY, postItem)
         }
     }
 }
