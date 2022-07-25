@@ -9,6 +9,8 @@ import ru.nikita.catsapp.model.FavoritesDataItem
 
 class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
 
+    var onCatClickListener: OnCatClickListener? = null
+
     var favoritesList: ArrayList<FavoritesDataItem> = arrayListOf()
         set(newValue) {
             field = newValue
@@ -31,7 +33,18 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(favoritesList[position])
+        holder.itemView.setOnLongClickListener {
+            onCatClickListener?.onCatClick(favoritesList[position])
+            false
+        }
     }
 
     override fun getItemCount(): Int = favoritesList.size
+
+    interface OnCatClickListener {
+        fun onCatClick(item: FavoritesDataItem) {
+
+        }
+    }
+
 }

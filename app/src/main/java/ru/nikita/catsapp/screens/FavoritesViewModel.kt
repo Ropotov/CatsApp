@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import retrofit2.Response
 import ru.nikita.catsapp.api.RetrofitInstance
+import ru.nikita.catsapp.model.DeleteResponse
 import ru.nikita.catsapp.model.FavoritesDataItem
 import ru.nikita.catsapp.utils.API_KEY
 
@@ -16,6 +17,11 @@ class FavoritesViewModel : ViewModel() {
     fun getFavoritesList() {
         viewModelScope.launch {
             favoritesList.value = RetrofitInstance.api.getFavoriteList(API_KEY)
+        }
+    }
+    fun deleteCarFromFavoritesList(string: String) {
+        viewModelScope.launch {
+            RetrofitInstance.api.deleteCatFromFavoriteList(string,API_KEY)
         }
     }
 }

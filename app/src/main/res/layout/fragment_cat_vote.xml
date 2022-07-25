@@ -67,7 +67,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toTopOf="@+id/guideline4"
-        android:clickable="false"/>
+        android:enabled="false"/>
 
     <Button
         android:id="@+id/btnDisLike"
@@ -81,7 +81,7 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toBottomOf="@+id/btnLike"
-        android:clickable="false"/>
+        android:enabled="false"/>
 
     <Button
         android:id="@+id/btnAddFavorite"
@@ -95,7 +95,8 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline2"
         app:layout_constraintStart_toStartOf="@+id/guideline1"
         app:layout_constraintTop_toBottomOf="@+id/btnDisLike"
-        android:clickable="false"/>
+        android:enabled="false"
+        />
 
 
 

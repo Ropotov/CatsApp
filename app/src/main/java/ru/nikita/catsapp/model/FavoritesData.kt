@@ -17,3 +17,7 @@ data class ImageData(
     var id: String,
     var url: String
 )
+
+data class DeleteResponse(
+    var message: String
+)

@@ -22,4 +22,10 @@ interface ApiService {
         @Query("api_key") apiKey: String
     ): Response<ArrayList<FavoritesDataItem>>
 
+
+    @DELETE("favourites/{favorite_id}")
+    suspend fun deleteCatFromFavoriteList(
+        @Path("favorite_id") favoriteId: String,
+        @Header("x-api-key") apiKey: String
+    ): Response<DeleteResponse>
 }

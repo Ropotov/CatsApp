@@ -20,6 +20,7 @@ import ru.nikita.catsapp.R
 import ru.nikita.catsapp.databinding.FragmentCatVoteBinding
 import ru.nikita.catsapp.model.DataModelItem
 import ru.nikita.catsapp.model.PostItem
+import ru.nikita.catsapp.utils.showSnackBar
 import kotlin.random.Random
 
 class CatVoteFragment : Fragment() {
@@ -39,35 +40,27 @@ class CatVoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val viewModel = ViewModelProvider(this)[CatVoteViewModel::class.java]
-        getCatImage(viewModel)
+        loadCatImage(viewModel)
         binding.btnLike.setOnClickListener {
-            updateCatImage(viewModel)
+            loadCatImage(viewModel)
         }
         binding.btnDisLike.setOnClickListener {
             showAlertDialog(viewModel)
         }
         binding.btnAddFavorite.setOnClickListener {
             val postItem = PostItem(image_id = list[0].id)
-            viewModel.postCat(postItem)
-            viewModel.postList.observe(viewLifecycleOwner, { response ->
-                if (response.isSuccessful) {
-                    showSnackBar(binding.clCatVoteFragment, getString(R.string.add_favorites))
-                    updateCatImage(viewModel)
-                } else {
-                    showSnackBar(binding.clCatVoteFragment, getString(R.string.not_add_favorites))
-                }
-            })
+            postCatImage(viewModel, postItem)
+            loadCatImage(viewModel)
         }
     }
-
-    private fun getCatImage(viewModel: CatVoteViewModel) {
-        viewModel.getCat()
-        viewModel.catList.observe(viewLifecycleOwner, { response ->
-            response.body()?.let { list = it } ?: showSnackBar(
-                binding.clCatVoteFragment,
-                getString(R.string.repeat)
-            )
-            loadImage()
+    private fun postCatImage(viewModel: CatVoteViewModel, postItem: PostItem){
+        viewModel.postCat(postItem)
+        viewModel.postList.observe(viewLifecycleOwner, { response ->
+            if (response.isSuccessful) {
+                showSnackBar(binding.clCatVoteFragment, getString(R.string.add_favorites))
+            } else {
+                showSnackBar(binding.clCatVoteFragment, getString(R.string.not_add_favorites))
+            }
         })
     }
 
@@ -97,6 +90,7 @@ class CatVoteFragment : Fragment() {
                 }
             })
             .into(binding.imageCat)
+
     }
 
     private fun createProgressDrawable(): CircularProgressDrawable {
@@ -107,16 +101,20 @@ class CatVoteFragment : Fragment() {
         return progressDrawable
     }
 
-    private fun updateCatImage(viewModel: CatVoteViewModel) {
+    private fun loadCatImage(viewModel: CatVoteViewModel) {
         clickableButton(false)
         viewModel.getCat()
+        viewModel.catList.observe(viewLifecycleOwner, { response ->
+            response.body()?.let { list = it }
+            loadImage()
+        })
     }
 
     private fun showAlertDialog(viewModel: CatVoteViewModel) {
 
         val listener = DialogInterface.OnClickListener { _, which ->
             when (which) {
-                DialogInterface.BUTTON_POSITIVE -> getCatImage(viewModel)
+                DialogInterface.BUTTON_POSITIVE -> loadCatImage(viewModel)
                 DialogInterface.BUTTON_NEGATIVE -> {
                     showSnackBar(
                         binding.clCatVoteFragment,
@@ -137,12 +135,8 @@ class CatVoteFragment : Fragment() {
     }
 
     private fun clickableButton(boolean: Boolean) {
-        binding.btnLike.isClickable = boolean
-        binding.btnDisLike.isClickable = boolean
-        binding.btnAddFavorite.isClickable = boolean
-    }
-
-    private fun showSnackBar(view: View, string: String) {
-        Snackbar.make(view, string, Snackbar.LENGTH_LONG).show()
+        binding.btnLike.isEnabled = boolean
+        binding.btnDisLike.isEnabled = boolean
+        binding.btnAddFavorite.isEnabled = boolean
     }
 }

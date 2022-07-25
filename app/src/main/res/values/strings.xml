@@ -15,4 +15,6 @@
     <string name="repeat">Попробуйте еще раз</string>
     <string name="add_favorites">Добавлено в избранные</string>
     <string name="not_add_favorites">Не удалось добавить</string>
+    <string name="not_delete_cat">Правильно, все котики достойны быть избранными</string>
+    <string name="alert_delete_dialog">Вы действительно хотите удалить котика?</string>
 </resources>
