@@ -12,9 +12,9 @@ import ru.nikita.catsapp.model.PostResponse
 import ru.nikita.catsapp.utils.API_KEY
 
 class CatVoteViewModel : ViewModel() {
+
     var catList: MutableLiveData<Response<ArrayList<DataModelItem>>> = MutableLiveData()
     val postList: MutableLiveData<Response<PostResponse>> = MutableLiveData()
-
 
     fun getCat() {
         viewModelScope.launch {

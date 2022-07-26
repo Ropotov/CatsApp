@@ -34,8 +34,10 @@ class FavoritesCatsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val viewModel = ViewModelProvider(this)[FavoritesViewModel::class.java]
         rvInit()
-
+        updateUI(viewModel)
+        deleteItem(viewModel)
     }
 
     override fun onResume() {
@@ -44,7 +46,6 @@ class FavoritesCatsFragment : Fragment() {
         updateUI(viewModel)
         deleteItem(viewModel)
     }
-
     private fun rvInit() {
         recyclerView = binding.rvFavoritesFragment
         adapter = FavoritesAdapter()
@@ -82,6 +83,7 @@ class FavoritesCatsFragment : Fragment() {
             }
         }
     }
+
     private fun updateUI(viewModel: FavoritesViewModel){
         viewModel.getFavoritesList()
         viewModel.favoritesList.observe(viewLifecycleOwner, { response ->

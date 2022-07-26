@@ -46,5 +46,4 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
 
         }
     }
-
 }

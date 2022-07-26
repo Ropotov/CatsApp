@@ -28,7 +28,6 @@ class CatVoteFragment : Fragment() {
     private lateinit var binding: FragmentCatVoteBinding
     private var list: ArrayList<DataModelItem> = arrayListOf()
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -90,7 +89,6 @@ class CatVoteFragment : Fragment() {
                 }
             })
             .into(binding.imageCat)
-
     }
 
     private fun createProgressDrawable(): CircularProgressDrawable {
