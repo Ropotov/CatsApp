@@ -1,7 +1,8 @@
-package ru.nikita.catsapp.screens
+package ru.nikita.catsapp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import ru.nikita.catsapp.databinding.ItemCatBinding
@@ -13,8 +14,10 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
 
     var favoritesList: ArrayList<FavoritesDataItem> = arrayListOf()
         set(newValue) {
+            val diffCallback = DiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            notifyDataSetChanged()
+            diffResult.dispatchUpdatesTo(this )
         }
 
     class ViewHolder(private val binding: ItemCatBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -44,6 +47,24 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
     interface OnCatClickListener {
         fun onCatClick(item: FavoritesDataItem) {
 
+        }
+    }
+
+    class DiffCallback(
+        private val oldList: ArrayList<FavoritesDataItem>,
+        private val newList: ArrayList<FavoritesDataItem>
+    ): DiffUtil.Callback(){
+        override fun getOldListSize(): Int = oldList.size
+        override fun getNewListSize(): Int = newList.size
+
+        override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            val oldCat = oldList[oldItemPosition]
+            val newCat = newList[newItemPosition]
+            return oldCat.id == newCat.id
+        }
+
+        override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+            return false
         }
     }
 }

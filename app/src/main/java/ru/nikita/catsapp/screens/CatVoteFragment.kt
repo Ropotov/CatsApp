@@ -15,18 +15,15 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
-import com.google.android.material.snackbar.Snackbar
 import ru.nikita.catsapp.R
 import ru.nikita.catsapp.databinding.FragmentCatVoteBinding
 import ru.nikita.catsapp.model.DataModelItem
 import ru.nikita.catsapp.model.PostItem
 import ru.nikita.catsapp.utils.showSnackBar
-import kotlin.random.Random
 
 class CatVoteFragment : Fragment() {
 
     private lateinit var binding: FragmentCatVoteBinding
-    private var list: ArrayList<DataModelItem> = arrayListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,18 +38,24 @@ class CatVoteFragment : Fragment() {
         val viewModel = ViewModelProvider(this)[CatVoteViewModel::class.java]
         loadCatImage(viewModel)
         binding.btnLike.setOnClickListener {
+            clickableButton(false)
             loadCatImage(viewModel)
         }
         binding.btnDisLike.setOnClickListener {
+            clickableButton(false)
             showAlertDialog(viewModel)
         }
         binding.btnAddFavorite.setOnClickListener {
-            val postItem = PostItem(image_id = list[0].id)
-            postCatImage(viewModel, postItem)
-            loadCatImage(viewModel)
+            clickableButton(false)
+            postCatImage(viewModel)
         }
     }
-    private fun postCatImage(viewModel: CatVoteViewModel, postItem: PostItem){
+
+    private fun postCatImage(viewModel: CatVoteViewModel) {
+        lateinit var postItem: PostItem
+        viewModel.catList.observe(viewLifecycleOwner, { response ->
+            response.body()?.let { postItem = PostItem(image_id = it[0].id) }
+        })
         viewModel.postCat(postItem)
         viewModel.postList.observe(viewLifecycleOwner, { response ->
             if (response.isSuccessful) {
@@ -61,11 +64,12 @@ class CatVoteFragment : Fragment() {
                 showSnackBar(binding.clCatVoteFragment, getString(R.string.not_add_favorites))
             }
         })
+        loadCatImage(viewModel)
     }
 
-    private fun loadImage() {
+    private fun loadImage(catUrl: String?) {
         Glide.with(binding.imageCat)
-            .load(list[0].url)
+            .load(catUrl)
             .placeholder(createProgressDrawable())
             .listener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
@@ -89,6 +93,7 @@ class CatVoteFragment : Fragment() {
                 }
             })
             .into(binding.imageCat)
+
     }
 
     private fun createProgressDrawable(): CircularProgressDrawable {
@@ -100,12 +105,11 @@ class CatVoteFragment : Fragment() {
     }
 
     private fun loadCatImage(viewModel: CatVoteViewModel) {
-        clickableButton(false)
         viewModel.getCat()
         viewModel.catList.observe(viewLifecycleOwner, { response ->
-            response.body()?.let { list = it }
-            loadImage()
+            response.body()?.let { loadImage(it[0].url) }
         })
+
     }
 
     private fun showAlertDialog(viewModel: CatVoteViewModel) {
@@ -118,6 +122,7 @@ class CatVoteFragment : Fragment() {
                         binding.clCatVoteFragment,
                         getString(R.string.text_snack_bar),
                     )
+                    clickableButton(true)
                 }
             }
         }

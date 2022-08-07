@@ -3,16 +3,14 @@ package ru.nikita.catsapp.screens
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import ru.nikita.catsapp.R
+import ru.nikita.catsapp.adapters.FavoritesAdapter
 import ru.nikita.catsapp.databinding.FragmentFavoritesCatsBinding
 import ru.nikita.catsapp.model.FavoritesDataItem
 import ru.nikita.catsapp.utils.showSnackBar
@@ -35,17 +33,17 @@ class FavoritesCatsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val viewModel = ViewModelProvider(this)[FavoritesViewModel::class.java]
-        rvInit()
         updateUI(viewModel)
-        deleteItem(viewModel)
+        rvInit()
     }
 
     override fun onResume() {
         super.onResume()
         val viewModel = ViewModelProvider(this)[FavoritesViewModel::class.java]
-        updateUI(viewModel)
         deleteItem(viewModel)
+
     }
+
     private fun rvInit() {
         recyclerView = binding.rvFavoritesFragment
         adapter = FavoritesAdapter()
@@ -60,7 +58,6 @@ class FavoritesCatsFragment : Fragment() {
                     when (which) {
                         DialogInterface.BUTTON_POSITIVE -> {
                             viewModel.deleteCarFromFavoritesList(item.id.toString())
-                            viewModel.getFavoritesList()
                             updateUI(viewModel)
                         }
                         DialogInterface.BUTTON_NEGATIVE -> {
