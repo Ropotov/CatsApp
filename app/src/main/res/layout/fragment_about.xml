@@ -14,14 +14,14 @@
         android:gravity="center_horizontal"
         android:textSize="26sp"
         android:textStyle="bold"
-        android:textColor="@color/blue"/>
+        android:textColor="@color/red"/>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="@string/about_text"
         android:textSize="16sp"
-        android:textColor="@color/light_blue"
+        android:textColor="@color/red"
         android:layout_marginTop="30dp"/>
 
 </LinearLayout>

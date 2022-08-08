@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -24,6 +25,7 @@ import ru.nikita.catsapp.utils.showSnackBar
 class CatVoteFragment : Fragment() {
 
     private lateinit var binding: FragmentCatVoteBinding
+    private val viewModel: CatVoteViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +37,6 @@ class CatVoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel = ViewModelProvider(this)[CatVoteViewModel::class.java]
         loadCatImage(viewModel)
         binding.btnLike.setOnClickListener {
             clickableButton(false)

@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikita.catsapp.R
@@ -20,6 +21,7 @@ class FavoritesCatsFragment : Fragment() {
     lateinit var binding: FragmentFavoritesCatsBinding
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: FavoritesAdapter
+    private val viewModel: FavoritesViewModel by viewModels()
 
 
     override fun onCreateView(
@@ -27,30 +29,12 @@ class FavoritesCatsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentFavoritesCatsBinding.inflate(inflater, container, false)
+        rvInit()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val viewModel = ViewModelProvider(this)[FavoritesViewModel::class.java]
-        updateUI(viewModel)
-        rvInit()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val viewModel = ViewModelProvider(this)[FavoritesViewModel::class.java]
-        deleteItem(viewModel)
-
-    }
-
-    private fun rvInit() {
-        recyclerView = binding.rvFavoritesFragment
-        adapter = FavoritesAdapter()
-        recyclerView.adapter = adapter
-    }
-
-    private fun deleteItem(viewModel: FavoritesViewModel) {
         adapter.onCatClickListener = object : FavoritesAdapter.OnCatClickListener {
             override fun onCatClick(item: FavoritesDataItem) {
                 super.onCatClick(item)
@@ -80,6 +64,18 @@ class FavoritesCatsFragment : Fragment() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+        updateUI(viewModel)
+    }
+
+    private fun rvInit() {
+        recyclerView = binding.rvFavoritesFragment
+        adapter = FavoritesAdapter()
+        recyclerView.adapter = adapter
+    }
+
 
     private fun updateUI(viewModel: FavoritesViewModel){
         viewModel.getFavoritesList()
