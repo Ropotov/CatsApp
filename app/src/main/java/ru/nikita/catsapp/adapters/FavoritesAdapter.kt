@@ -17,7 +17,7 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
             val diffCallback = DiffCallback(field, newValue)
             val diffResult = DiffUtil.calculateDiff(diffCallback)
             field = newValue
-            diffResult.dispatchUpdatesTo(this )
+            diffResult.dispatchUpdatesTo(this)
         }
 
     class ViewHolder(private val binding: ItemCatBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -38,7 +38,7 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
         holder.bind(favoritesList[position])
         holder.itemView.setOnLongClickListener {
             onCatClickListener?.onCatClick(favoritesList[position])
-            false
+            true
         }
     }
 
@@ -53,7 +53,8 @@ class FavoritesAdapter : RecyclerView.Adapter<FavoritesAdapter.ViewHolder>() {
     class DiffCallback(
         private val oldList: ArrayList<FavoritesDataItem>,
         private val newList: ArrayList<FavoritesDataItem>
-    ): DiffUtil.Callback(){
+    ) : DiffUtil.Callback() {
+
         override fun getOldListSize(): Int = oldList.size
         override fun getNewListSize(): Int = newList.size
 

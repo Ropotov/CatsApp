@@ -13,6 +13,7 @@ import ru.nikita.catsapp.utils.API_KEY
 class FavoritesViewModel : ViewModel() {
 
     var favoritesList: MutableLiveData<Response<ArrayList<FavoritesDataItem>>> = MutableLiveData()
+    var deleteResponse: MutableLiveData<Response<DeleteResponse>> = MutableLiveData()
 
     fun getFavoritesList() {
         viewModelScope.launch {
@@ -21,7 +22,7 @@ class FavoritesViewModel : ViewModel() {
     }
     fun deleteCarFromFavoritesList(string: String) {
         viewModelScope.launch {
-            RetrofitInstance.api.deleteCatFromFavoriteList(string,API_KEY)
+            deleteResponse.value = RetrofitInstance.api.deleteCatFromFavoriteList(string,API_KEY)
         }
     }
 }

@@ -8,7 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.RecyclerView
 import ru.nikita.catsapp.R
 import ru.nikita.catsapp.adapters.FavoritesAdapter
@@ -33,56 +33,62 @@ class FavoritesCatsFragment : Fragment() {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        adapter.onCatClickListener = object : FavoritesAdapter.OnCatClickListener {
-            override fun onCatClick(item: FavoritesDataItem) {
-                super.onCatClick(item)
-                val listener = DialogInterface.OnClickListener { _, which ->
-                    when (which) {
-                        DialogInterface.BUTTON_POSITIVE -> {
-                            viewModel.deleteCarFromFavoritesList(item.id.toString())
-                            updateUI(viewModel)
-                        }
-                        DialogInterface.BUTTON_NEGATIVE -> {
-                            showSnackBar(
-                                binding.rvFavoritesFragment,
-                                getString(R.string.not_delete_cat)
-                            )
-                        }
-                    }
-                }
-
-                val dialog = AlertDialog.Builder(requireContext())
-                    .setCancelable(false)
-                    .setTitle(getString(R.string.alert_title))
-                    .setMessage(getString(R.string.alert_delete_dialog))
-                    .setNegativeButton(getString(R.string.no), listener)
-                    .setPositiveButton(getString(R.string.yes), listener)
-                    .create()
-                dialog.show()
-            }
-        }
-    }
-
     override fun onResume() {
         super.onResume()
         updateUI(viewModel)
+        adapter.onCatClickListener = object : FavoritesAdapter.OnCatClickListener {
+            override fun onCatClick(item: FavoritesDataItem) {
+                super.onCatClick(item)
+                showAlertDialog(item)
+            }
+        }
     }
 
     private fun rvInit() {
         recyclerView = binding.rvFavoritesFragment
         adapter = FavoritesAdapter()
         recyclerView.adapter = adapter
+        val itemAnimator = binding.rvFavoritesFragment.itemAnimator
+        if (itemAnimator is DefaultItemAnimator) {
+            itemAnimator.supportsChangeAnimations = false
+        }
     }
 
 
-    private fun updateUI(viewModel: FavoritesViewModel){
+    private fun updateUI(viewModel: FavoritesViewModel) {
         viewModel.getFavoritesList()
         viewModel.favoritesList.observe(viewLifecycleOwner, { response ->
             if (response.isSuccessful) {
                 response.body()?.let { adapter.favoritesList = it }
             }
         })
+    }
+
+    private fun showAlertDialog(item: FavoritesDataItem) {
+        val listener = DialogInterface.OnClickListener { _, which ->
+            when (which) {
+                DialogInterface.BUTTON_POSITIVE -> {
+                    viewModel.deleteCarFromFavoritesList(item.id.toString())
+                    viewModel.deleteResponse.observe(viewLifecycleOwner, { response ->
+                        if (response.isSuccessful) updateUI(viewModel)
+                    })
+                }
+                DialogInterface.BUTTON_NEGATIVE -> {
+                    showSnackBar(
+                        binding.rvFavoritesFragment,
+                        getString(R.string.not_delete_cat)
+                    )
+                }
+            }
+        }
+
+        val dialog = AlertDialog.Builder(requireContext())
+            .setCancelable(false)
+            .setTitle(getString(R.string.alert_title))
+            .setMessage(getString(R.string.alert_delete_dialog))
+            .setNegativeButton(getString(R.string.no), listener)
+            .setPositiveButton(getString(R.string.yes), listener)
+            .create()
+        dialog.show()
     }
 }
