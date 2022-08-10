@@ -38,10 +38,22 @@ class CatVoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loadCatImage(viewModel)
+        viewModel.getCat()
+        viewModel.catList.observe(viewLifecycleOwner, { response ->
+            response.body()?.let { loadImage(it[0].url); postItem = PostItem(image_id = it[0].id)}
+        })
+        viewModel.postList.observe(viewLifecycleOwner, { response ->
+            if (response.isSuccessful) {
+                showSnackBar(binding.clCatVoteFragment, getString(R.string.add_favorites))
+                viewModel.getCat()
+            } else {
+                showSnackBar(binding.clCatVoteFragment, getString(R.string.not_add_favorites))
+            }
+        })
+
         binding.btnLike.setOnClickListener {
             clickableButton(false)
-            loadCatImage(viewModel)
+            viewModel.getCat()
         }
         binding.btnDisLike.setOnClickListener {
             clickableButton(false)
@@ -49,24 +61,9 @@ class CatVoteFragment : Fragment() {
         }
         binding.btnAddFavorite.setOnClickListener {
             clickableButton(false)
-            postCatImage(viewModel)
+            viewModel.postCat(postItem)
 
         }
-    }
-
-    private fun postCatImage(viewModel: CatVoteViewModel) {
-        viewModel.postCat(postItem)
-        viewModel.postList.observe(viewLifecycleOwner, { response ->
-            if (response.isSuccessful) {
-                showSnackBar(binding.clCatVoteFragment, getString(R.string.add_favorites))
-                Log.d("TAG", "111")
-                viewModel.postList.removeObservers(viewLifecycleOwner)
-            } else {
-                showSnackBar(binding.clCatVoteFragment, getString(R.string.not_add_favorites))
-                viewModel.postList.removeObservers(viewLifecycleOwner)
-            }
-        })
-        loadCatImage(viewModel)
     }
 
     private fun loadImage(catUrl: String?) {
@@ -106,18 +103,11 @@ class CatVoteFragment : Fragment() {
         return progressDrawable
     }
 
-    private fun loadCatImage(viewModel: CatVoteViewModel) {
-        viewModel.getCat()
-        viewModel.catList.observe(viewLifecycleOwner, { response ->
-            response.body()?.let { loadImage(it[0].url); postItem = PostItem(image_id = it[0].id)}
-        })
-    }
-
     private fun showAlertDialog(viewModel: CatVoteViewModel) {
 
         val listener = DialogInterface.OnClickListener { _, which ->
             when (which) {
-                DialogInterface.BUTTON_POSITIVE -> loadCatImage(viewModel)
+                DialogInterface.BUTTON_POSITIVE -> viewModel.getCat()
                 DialogInterface.BUTTON_NEGATIVE -> {
                     showSnackBar(
                         binding.clCatVoteFragment,

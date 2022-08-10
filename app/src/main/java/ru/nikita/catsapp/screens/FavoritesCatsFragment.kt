@@ -18,7 +18,7 @@ import ru.nikita.catsapp.utils.showSnackBar
 
 class FavoritesCatsFragment : Fragment() {
 
-    lateinit var binding: FragmentFavoritesCatsBinding
+    private lateinit var binding: FragmentFavoritesCatsBinding
     lateinit var recyclerView: RecyclerView
     lateinit var adapter: FavoritesAdapter
     private val viewModel: FavoritesViewModel by viewModels()
@@ -33,15 +33,27 @@ class FavoritesCatsFragment : Fragment() {
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        updateUI(viewModel)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         adapter.onCatClickListener = object : FavoritesAdapter.OnCatClickListener {
             override fun onCatClick(item: FavoritesDataItem) {
                 super.onCatClick(item)
                 showAlertDialog(item)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getFavoritesList()
+        viewModel.favoritesList.observe(viewLifecycleOwner, { response ->
+            if (response.isSuccessful) {
+                response.body()?.let { adapter.favoritesList = it }
+            }
+        })
+        viewModel.deleteResponse.observe(viewLifecycleOwner, { response ->
+            if (response.isSuccessful) viewModel.getFavoritesList()
+        })
     }
 
     private fun rvInit() {
@@ -54,24 +66,11 @@ class FavoritesCatsFragment : Fragment() {
         }
     }
 
-
-    private fun updateUI(viewModel: FavoritesViewModel) {
-        viewModel.getFavoritesList()
-        viewModel.favoritesList.observe(viewLifecycleOwner, { response ->
-            if (response.isSuccessful) {
-                response.body()?.let { adapter.favoritesList = it }
-            }
-        })
-    }
-
     private fun showAlertDialog(item: FavoritesDataItem) {
         val listener = DialogInterface.OnClickListener { _, which ->
             when (which) {
                 DialogInterface.BUTTON_POSITIVE -> {
                     viewModel.deleteCarFromFavoritesList(item.id.toString())
-                    viewModel.deleteResponse.observe(viewLifecycleOwner, { response ->
-                        if (response.isSuccessful) updateUI(viewModel)
-                    })
                 }
                 DialogInterface.BUTTON_NEGATIVE -> {
                     showSnackBar(
